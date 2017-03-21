@@ -13,7 +13,7 @@ dcos_master = input("Enter the DNS hostname or IP of your Marathon Instance : ")
 userid = input('Enter the username for the DCOS cluster : ')
 password = input('Enter the password for the DCOS cluster : ')
 '''
-dcos_master = 'https://thomaskra-elasticl-vdprnh8o7efq-90864495.us-west-2.elb.amazonaws.com'
+dcos_master = 'https://thomaskra-elasticl-1rhz5mhe1cez4-562658563.us-west-2.elb.amazonaws.com'
 userid = 'bootstrapuser'
 password = 'deleteme'
 marathon_app_json = '/Users/tkraus/sandbox/marathon/12b-siege.json'
@@ -114,23 +114,3 @@ for agent in mesos_agents_json['slaves']:
         print('  {} = {}'.format('Reserved MEM',role_mem_total))
         print('  {} = {}'.format('Reserved DISK',role_disk_total))
 
-## MARATHON SECTIONS
-'''
-## Initialize new Marathon Instance of Marathon Class
-new_marathon = marathon.marathon(dcos_master,dcos_token)
-
-## List Marathon Apps Method
-marathon_apps = new_marathon.get_all_apps()
-print ("The following apps exist in Marathon...", marathon_apps)
-print('-----------------------------')
-
-## Get Marathon App Details Method - List Tasks & Agents for all Marathon Apps
-if marathon_apps != None:
-    for app in marathon_apps:
-        app_details = new_marathon.get_app_details(app)
-        print('{}{}'.format("Marathon App details = ", app_details))
-        print('-----------------------------')
-
-new_app = new_marathon.add_app(marathon_app_json)
-print('Marathon App ID is ' + new_app)
-'''

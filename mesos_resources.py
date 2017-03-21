@@ -1,7 +1,5 @@
 __author__ = 'tkraus-m'
 
-
-
 import sys
 import requests
 import json

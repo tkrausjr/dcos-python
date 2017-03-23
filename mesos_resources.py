@@ -11,7 +11,7 @@ dcos_master = input("Enter the DNS hostname or IP of your Marathon Instance : ")
 userid = input('Enter the username for the DCOS cluster : ')
 password = input('Enter the password for the DCOS cluster : ')
 '''
-dcos_master = 'https://thomaskra-elasticl-1rhz5mhe1cez4-562658563.us-west-2.elb.amazonaws.com'
+dcos_master = 'https://thomaskra-elasticl-amzi1vdbr9h3-2014791338.us-west-2.elb.amazonaws.com'
 userid = 'bootstrapuser'
 password = 'deleteme'
 marathon_app_json = '/Users/tkraus/sandbox/marathon/12b-siege.json'

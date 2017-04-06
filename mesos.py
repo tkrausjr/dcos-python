@@ -40,6 +40,16 @@ class mesos(object):
         else:
             #print ("Found Mesos Roles")
             return response.text
+	
+    def get_quota_info(self):
+	response = requests.get(self.uri + '/quota', headers=self.headers, verify=False)
+        if response.status_code != 200:
+            print ("Failed to get Quotas")
+            return None
+        else:
+            #print ("Found Mesos Roles")
+            return response.text
+ 
 
 def dcos_auth_login(dcos_master,userid,password):
     '''
@@ -50,4 +60,3 @@ def dcos_auth_login(dcos_master,userid,password):
     response = requests.post(dcos_master + '/acs/api/v1/auth/login', headers=login_headers, data=json.dumps(rawdata),verify=False).json()
     auth_token=response['token']
     return auth_token
-

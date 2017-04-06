@@ -20,6 +20,7 @@ password = 'deleteme'
 ## Login to DCOS to retrieve an API TOKEN
 dcos_token = marathon.dcos_auth_login(dcos_master,userid,password)
 if dcos_token != '':
+    # Change - Remove Token from printing
     print('{}{}'.format("DCOS TOKEN = ", dcos_token))
 else:
     exit(1)
@@ -30,6 +31,7 @@ print('-----------------------------')
 new_mesos = mesos.mesos(dcos_master,dcos_token)
 
 mesos_stats_text = new_mesos.get_metrics()
+# Change - Remove RAW print below.
 print("DEBUG - RAW Mesos stats = " + mesos_stats_text)
 mesos_stats_json = json.loads(mesos_stats_text)
 
@@ -37,13 +39,16 @@ mesos_stats_json = json.loads(mesos_stats_text)
 
 
 print ("\n=======================================================")
-print ("MESOS ROLES Information")
+print ("DCOS Cluster MESOS ROLES Information")
 mesos_roles_json = json.loads(new_mesos.get_roles())
 roles=[]
 for role in mesos_roles_json['roles']:
     roles.append(role['name'])
 roles.pop(0)
 print(str(roles))
+
+# Change - Please put the Mesos Agents at the END and keep all the Reservations, quotas, and Cluster wide information at the front.
+# Change - Please remove the (u' from the printout) and just keep the KEY and Value in String format without the parenthesis.
 
 print ("\n=======================================================")
 print ("MESOS AGENTS Information")

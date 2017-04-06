@@ -11,7 +11,7 @@ dcos_master = input("Enter the DNS hostname or IP of your Marathon Instance : ")
 userid = input('Enter the username for the DCOS cluster : ')
 password = input('Enter the password for the DCOS cluster : ')
 '''
-dcos_master = 'https://mangeshka-elasticl-990fe8q6z1lx-956417049.us-west-2.elb.amazonaws.com'
+dcos_master = 'https://mangeshka-elasticl-10k1luq546j7m-1974096467.us-west-2.elb.amazonaws.com'
 userid = 'bootstrapuser'
 password = 'deleteme'
 ## marathon_app_json = '/Users/tkraus/sandbox/marathon/12b-siege.json'
@@ -20,7 +20,7 @@ password = 'deleteme'
 ## Login to DCOS to retrieve an API TOKEN
 dcos_token = marathon.dcos_auth_login(dcos_master,userid,password)
 if dcos_token != '':
-    
+    # Change - Remove Token from printing
     print('{}{}'.format("DCOS TOKEN = ", dcos_token))
 else:
     exit(1)
@@ -31,15 +31,24 @@ print('-----------------------------')
 new_mesos = mesos.mesos(dcos_master,dcos_token)
 
 mesos_stats_text = new_mesos.get_metrics()
-
+# Change - Remove RAW print below.
 print("DEBUG - RAW Mesos stats = " + mesos_stats_text)
 mesos_stats_json = json.loads(mesos_stats_text)
 
 
 
+# print(mesos_quota_json['infos'][0]['guarantee'])
+#print(mesos_quota_json['infos'][0]['guarantee'][0]['scalar']['value'])
+#print(mesos_quota_json['infos'][0]['guarantee'][1]['name'])
+#print(mesos_quota_json['infos'][0]['guarantee'][1]['scalar']['value'])
+
+
+
+#stuff['guarantee']['name'] + ' - ' + stuff['guarantee']['scalar']['value']   
+
 
 print ("\n=======================================================")
-
+print ("DCOS Cluster MESOS ROLES Information")
 mesos_roles_json = json.loads(new_mesos.get_roles())
 roles=[]
 for role in mesos_roles_json['roles']:
@@ -47,10 +56,17 @@ for role in mesos_roles_json['roles']:
 roles.pop(0)
 print(str(roles))
 
+<<<<<<< HEAD
+=======
+# Change - Please put the Mesos Agents at the END and keep all the Reservations, quotas, and Cluster wide information at the front.
+# Change - Please remove the (u' from the printout) and just keep the KEY and Value in String format without the parenthesis.
+>>>>>>> origin/master
+
 print ("\n=======================================================")
 print ("MESOS AGENTS Information")
 mesos_agents_text = new_mesos.get_agents()
 mesos_agents_json = json.loads(mesos_agents_text)
+
 
 dict_for_totals_perRole={}
 total_cpu_per_role=0
@@ -122,59 +138,93 @@ for agent in mesos_agents_json['slaves']:
 	# dict_for_totals_perRole[mesos_role+'- mem'] = role_mem_total
 
 
-print (" Following are the Reservations of CPU , DISK and MEM across the cluster ")
+# print (" Following are the Reservations of CPU , DISK and MEM across the cluster ")
 total_reserved_cpu=0
 total_reserved_disk=0
 total_reserved_mem=0
-for key, value in dict_for_totals_perRole.iteritems():
-	if key.startswith('cpu'):
-		total_reserved_cpu = total_reserved_cpu + value
-	if key.startswith('disk'):
-		total_reserved_disk += value
-	if key.startswith('mem'):
-		total_reserved_mem += value
-
-	print (key, value)
 
 
+
+print ("Total Resources Summary ")
 print ("\n=======================================================")
 print ("MESOS Metrics Snapshot")
-print ("  MEMORY")
+print ("MEMORY")
 print('    {} = {} {}'.format('DCOS Mesos mem_total Configured', int(mesos_stats_json.get('master/mem_total')), 'MB'))
 print('    {} = {} {}'.format('DCOS Mesos mem_used', mesos_stats_json.get('master/mem_used'), 'MB'))
 print('    {} = {} {}'.format('DCOS Mesos mem_percent', round(mesos_stats_json.get('master/mem_percent')*100,2), '%'))
-print "Reserved Mem is :{}".format(total_reserved_mem)
+# print "    Reserved Mem is :{}".format(total_reserved_mem)
 
 #print total_reserved_mem
 #print('    {} = {} {}'.format('DCOS Mesos Reserved MEM',int(total_reserved_mem)))
 
 
-print ("  CPU")
+print ("CPU")
 print('    {} = {} {}'.format('DCOS Mesos cpu_total Configured', int(mesos_stats_json.get('master/cpus_total')), 'Cores'))
 print('    {} = {} {}'.format('DCOS Mesos cpu_used', mesos_stats_json.get('master/cpus_used'), 'Cores'))
 print('    {} = {} {}'.format('DCOS Mesos cpu_percent', round(mesos_stats_json.get('master/cpus_percent')*100,2), '%'))
 # print('    {} = {} {}'.format('DCOS Mesos Reserved CPUs',total_reserved_cpu))
-print "Reserved CPU is :{}".format(total_reserved_cpu)
+# print "     Reserved CPU is :{}".format(total_reserved_cpu)
 
-print ("  DISK")
+print ("DISK")
 print('    {} = {} {}'.format('DCOS Mesos disk_total Configured', int(mesos_stats_json.get('master/disk_total')), 'MB'))
 print('    {} = {} {}'.format('DCOS Mesos disk_used', int(mesos_stats_json.get('master/disk_used')), 'MB'))
 print('    {} = {} {}'.format('DCOS Mesos disk_percent', round(mesos_stats_json.get('master/disk_percent')*100,2), '%'))
 # print('    {} = {} {}'.format('DCOS Mesos Reserved DISK',total_reserved_disk))
-print "Reserved Disk is :{}".format(total_reserved_disk)
+# print "      Reserved Disk is :{}".format(total_reserved_disk)
+
+print ("\n=======================================================")
+ 
+print ("Reservations Informtion is as follows :\n")
+
+print ("Breakup by Role - \n")
+for key_resource, value_resource in dict_for_totals_perRole.iteritems():
+	if key_resource.startswith('cpu'):
+		total_reserved_cpu = total_reserved_cpu + value_resource
+	if key_resource.startswith('disk'):
+		total_reserved_disk += value_resource
+	if key_resource.startswith('mem'):
+		total_reserved_mem += value_resource
+
+	print (key_resource, value_resource)
+
+print ("Total Reservations by Resource \n")
+print "    Reserved Mem is :{}".format(total_reserved_mem)
+print "    Reserved CPU is :{}".format(total_reserved_cpu)
+print "    Reserved Disk is :{}".format(total_reserved_disk)
+
+print ("\n=======================================================")
+
+print "\n Quota information by role is as follows:\n" 
+#f
+mesos_quota_text = new_mesos.get_quota_info()
+
+mesos_quota_json =  json.loads(mesos_quota_text)
+
+if mesos_quota_json:
+	for d1 in mesos_quota_json['infos']:
+		print d1['role'] + ' : '
+		for d2 in d1['guarantee']:
+			print d2['name'] + ' - ' + str(d2['scalar']['value'])   
+		print "\n"
+else: 
+	print ("Quota have not been set") 
+
+
+print ("\n=======================================================")
 
 
 print ("  FRAMEWORKS")
 print('    {} = {} '.format('DCOS Mesos Connected Frameworks', int(mesos_stats_json.get('master/frameworks_connected'))))
 print('    {} = {} '.format('DCOS Mesos Active Frameworks', int(mesos_stats_json.get('master/frameworks_active'))))
 
+print ("\n=======================================================")
+
 print ("  AGENTS")
 print('    {} = {} '.format('DCOS Mesos Active Agents', int(mesos_stats_json.get('master/slaves_active'))))
 print('    {} = {} '.format('DCOS Mesos Connected Agents', int(mesos_stats_json.get('master/slaves_connected'))))
 
-
+print ("\n=======================================================")
 	
 	
-
 
 

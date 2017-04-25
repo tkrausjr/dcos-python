@@ -2,11 +2,9 @@ __author__ = 'tkraus-m'
 
 import sys
 import json
-import modules.marathon
-import modules.mesos
+import marathon
+import mesos
 import requests
-
-import whydoyouwantto
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -202,11 +200,11 @@ for agent in mesos_agents_json['slaves']:
 		# total_disk_per_role = total_disk_per_role + role_disk_total
 
         #print('{} {} {} {} {}:'.format('Role',mesos_role,'on agent', agent['hostname'],'is using'))
-        print('  {} = {}'.format('Reserved CPUS',role_cpus_total))
+	print('  {} = {}'.format('Reserved CPUS',role_cpus_total))
 	if ('cpus-'+ mesos_role) in dict_for_totals_perRole:
 	    dict_for_totals_perRole['cpus-'+ mesos_role] += role_cpus_total
 	else: 
-		dict_for_totals_perRole['cpus-'+ mesos_role] = role_cpus_total
+	    dict_for_totals_perRole['cpus-'+ mesos_role] = role_cpus_total
 
 
         print('  {} = {}'.format('Reserved DISK',role_disk_total))

@@ -127,10 +127,10 @@ mesos_quota_json =  json.loads(mesos_quota_text)
 
 if mesos_quota_json:
         for d1 in mesos_quota_json['infos']:
-                print d1['role'] + ' : '
+                print(d1['role'] + ' : ')
                 for d2 in d1['guarantee']:
-                        print d2['name'] + ' - ' + str(d2['scalar']['value'])
-                print "\n"
+                        print(d2['name'] + ' - ' + str(d2['scalar']['value']))
+                print ("\n")
 else:
         print ("Quota have not been set")
 

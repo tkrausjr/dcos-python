@@ -68,7 +68,7 @@ print ("     Roles are as follows : \n")
 for role in mesos_roles_json['roles']:
     roles.append(role['name'])
    # i+=1
-    print '         ' + roles[i] 
+    print ('         ' + roles[i] )
     i+=1
 # roles.pop(0)
 # print(str(roles))

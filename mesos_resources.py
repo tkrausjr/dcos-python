@@ -2,8 +2,8 @@ __author__ = 'tkraus-m'
 
 import sys
 import json
-import marathon
-import mesos
+import modules.marathon
+import modules.mesos
 import requests
 
 import whydoyouwantto
@@ -204,7 +204,7 @@ for agent in mesos_agents_json['slaves']:
         #print('{} {} {} {} {}:'.format('Role',mesos_role,'on agent', agent['hostname'],'is using'))
         print('  {} = {}'.format('Reserved CPUS',role_cpus_total))
 	if ('cpus-'+ mesos_role) in dict_for_totals_perRole:
-		dict_for_totals_perRole['cpus-'+ mesos_role] += role_cpus_total
+	    dict_for_totals_perRole['cpus-'+ mesos_role] += role_cpus_total
 	else: 
 		dict_for_totals_perRole['cpus-'+ mesos_role] = role_cpus_total
 

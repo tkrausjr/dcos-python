@@ -9,18 +9,12 @@ import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-
-
-
-'''
+dcos_master = input('Enter hostname / IP for DCOS Master : ') # https://master-ip.domain.com
 userid = input('Enter the username for the DCOS cluster : ')
 password = input('Enter the password for the DCOS cluster : ')
-'''
 
-#dcos_master = 'https://d-2d06-u01.lab-4.cloudlab.jpmchase.net'
-dcos_master = 'https://cld00046-u37.na-2c.cloud.jpmchase.net'
-userid = 'admindcos'
-password = 'dcos123'
+# userid = 'xxxxxxx'
+# password = 'yyyyyyy'
 ## marathon_app_json = '/Users/tkraus/sandbox/marathon/12b-siege.json'
 
 

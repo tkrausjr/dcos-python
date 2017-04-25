@@ -2,27 +2,18 @@ __author__ = 'tkraus-m'
 
 import sys
 import json
-import modules.marathon
-import modules.mesos
+import modules.marathon as marathon
+import modules.mesos as mesos
 import requests
-
-import whydoyouwantto
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
+dcos_master = 'https://thomaskra-elasticl-w2zttbxjow1c-1785408093.us-east-1.elb.amazonaws.com'
+userid = input('Enter the username for the DCOS cluster '+dcos_master +' : ')
+password = input('Enter the password for the DCOS cluster '+dcos_master +' : ')
 
 
-
-'''
-userid = input('Enter the username for the DCOS cluster : ')
-password = input('Enter the password for the DCOS cluster : ')
-'''
-
-#dcos_master = 'https://d-2d06-u01.lab-4.cloudlab.jpmchase.net'
-dcos_master = 'https://cld00046-u37.na-2c.cloud.jpmchase.net'
-userid = 'admindcos'
-password = 'dcos123'
 ## marathon_app_json = '/Users/tkraus/sandbox/marathon/12b-siege.json'
 
 
@@ -47,18 +38,6 @@ mesos_stats_json = json.loads(mesos_stats_text)
 
 #print ("====================================================================")
 
-
-
-# print(mesos_quota_json['infos'][0]['guarantee'])
-#print(mesos_quota_json['infos'][0]['guarantee'][0]['scalar']['value'])
-#print(mesos_quota_json['infos'][0]['guarantee'][1]['name'])
-#print(mesos_quota_json['infos'][0]['guarantee'][1]['scalar']['value'])
-
-
-
-#stuff['guarantee']['name'] + ' - ' + stuff['guarantee']['scalar']['value']   
-
-
 print ("\n=======================================================")
 i=0
 print ("\nDCOS Cluster MESOS ROLES Information")
@@ -67,11 +46,9 @@ roles=[]
 print ("     Roles are as follows : \n")
 for role in mesos_roles_json['roles']:
     roles.append(role['name'])
-   # i+=1
     print ('         ' + roles[i] )
     i+=1
-# roles.pop(0)
-# print(str(roles))
+
 
 # <<<<<<< HEAD
 #=======
@@ -120,7 +97,7 @@ print('    {} = {} '.format('DCOS Mesos Connected Agents', int(mesos_stats_json.
 
 print ("\n=======================================================")
 
-print("\nQUOTAS Information by Role is as follows:\n")
+print("\n Mesos QUOTAS Information by Role is as follows:\n")
 #f
 mesos_quota_text = new_mesos.get_quota_info()
 mesos_quota_json =  json.loads(mesos_quota_text)
@@ -137,7 +114,7 @@ else:
 
 print ("\n=======================================================")
 
-print ("MESOS AGENTS Information")
+print ("MESOS AGENTS Resource Information")
 # Agents Calculation  
 mesos_agents_text = new_mesos.get_agents()
 mesos_agents_json = json.loads(mesos_agents_text)
@@ -147,21 +124,7 @@ dict_for_totals_perRole={}
 total_cpu_per_role=0
 total_disk_per_role=0
 total_mem_per_role=0
-'''
-for agent in mesos_agents_json['slaves']:
-    print('\n-----------------------------------------------------------------------------------------------------')
-    print('{}: {}    {}: {}'.format('Agent ID',agent['id'],'Hostname',agent['hostname']))
 
-    print(' {} = {}'.format('Configured CPU',int(agent.get('resources',{'cpus'})['cpus'])))
-    print(' {} = {}'.format('Configured MEM',int(agent.get('resources',{'mem'})['mem'])))
-    print(' {} = {}'.format('Configured DISK',int(agent.get('resources',{'disk'})['disk'])))
-    print(' {} = {}'.format('Configured GPUs',int(agent.get('resources',{'gpus'})['gpus'])))
-    reservations = agent['reserved_resources_full']
-    for key , value in agent ['reserved_resources_full'].items():
-        mesos_role = key 
-        print('-----------------------------')
-        print('{}  {}'.format('Mesos Role: ',mesos_role))
-'''
 for agent in mesos_agents_json['slaves']:
     # "agent" is a dict object
     print('\n-----------------------------------------------------------------------------------------------------')
@@ -176,7 +139,6 @@ for agent in mesos_agents_json['slaves']:
     # reservations is a python dict
     # print('{} ={}'.format('DEBUG - Full Agent Reserved Resources Full KEY', agent['reserved_resources_full'].items()))
 
-
     for key,value in agent['reserved_resources_full'].items():
         # Loop Through the "agent" dict
         print('-----------------------------')
@@ -188,45 +150,32 @@ for agent in mesos_agents_json['slaves']:
         for reservation in value:
             # reservation is a dict
             resource_name=reservation.get('name')
-            #resource_value=reservation.get('scalar',{'value'})['value']
             if reservation.get('name') == 'cpus':
                 role_cpus_total=(role_cpus_total + reservation.get('scalar',{'value'})['value'])
-		# total_cpu_per_role = total_cpu_per_role + role_cpus_total
 
             if reservation.get('name') == 'mem':
                 role_mem_total=(role_cpus_total + reservation.get('scalar',{'value'})['value'])
-		# total_mem_per_role = total_mem_per_role + role_mem_total		
 
             if reservation.get('name')=='disk':
                 role_disk_total=(role_cpus_total + reservation.get('scalar',{'value'})['value'])
-		# total_disk_per_role = total_disk_per_role + role_disk_total
 
-        #print('{} {} {} {} {}:'.format('Role',mesos_role,'on agent', agent['hostname'],'is using'))
         print('  {} = {}'.format('Reserved CPUS',role_cpus_total))
-	if ('cpus-'+ mesos_role) in dict_for_totals_perRole:
-	    dict_for_totals_perRole['cpus-'+ mesos_role] += role_cpus_total
-	else: 
-		dict_for_totals_perRole['cpus-'+ mesos_role] = role_cpus_total
-
+        if ('cpus-'+ mesos_role) in dict_for_totals_perRole:
+            dict_for_totals_perRole['cpus-'+ mesos_role] += role_cpus_total
+        else:
+            dict_for_totals_perRole['cpus-'+ mesos_role] = role_cpus_total
 
         print('  {} = {}'.format('Reserved DISK',role_disk_total))
-	if ('disk-'+ mesos_role) in dict_for_totals_perRole:
+        if ('disk-'+ mesos_role) in dict_for_totals_perRole:
                 dict_for_totals_perRole['disk-'+mesos_role] += role_disk_total
         else:
-                dict_for_totals_perRole['disk-'+mesos_role] = role_disk_total
-        
+            dict_for_totals_perRole['disk-'+mesos_role] = role_disk_total
 
-
-	# dict_for_totals_perRole[mesos_role+'- disk'] = role_disk_total
         print('  {} = {}'.format('Reserved MEM',role_mem_total))
-	if ('mem-'+mesos_role) in dict_for_totals_perRole:
-                dict_for_totals_perRole['mem-'+mesos_role] += role_mem_total
+        if ('mem-'+mesos_role) in dict_for_totals_perRole:
+            dict_for_totals_perRole['mem-'+mesos_role] += role_mem_total
         else:
-                dict_for_totals_perRole['mem-'+mesos_role] = role_mem_total
-        
-
-	# dict_for_totals_perRole[mesos_role+'- mem'] = role_mem_total
-
+            dict_for_totals_perRole['mem-'+mesos_role] = role_mem_total
 
 # print (" Following are the Reservations of CPU , DISK and MEM across the cluster ")
 total_reserved_cpu=0
@@ -235,17 +184,15 @@ total_reserved_mem=0
 
 print ("\n=======================================================")
  
-print ("\nRESERVATIONS Information is as follows :")
-print ("Breakup by Role - \n")
-for key_resource, value_resource in dict_for_totals_perRole.iteritems():
-	if key_resource.startswith('cpu'):
-		total_reserved_cpu = total_reserved_cpu + value_resource
-	if key_resource.startswith('disk'):
-		total_reserved_disk += value_resource
-	if key_resource.startswith('mem'):
-		total_reserved_mem += value_resource
-
-        print '   ' + str(key_resource)+' - '+ str(value_resource)
+print ("\n MESOS RESERVATIONS by ROLE :")
+for key_resource, value_resource in dict_for_totals_perRole.items():
+    if key_resource.startswith('cpu'):
+        total_reserved_cpu = total_reserved_cpu + value_resource
+    if key_resource.startswith('disk'):
+        total_reserved_disk += value_resource
+    if key_resource.startswith('mem'):
+        total_reserved_mem += value_resource
+        print('   ' + str(key_resource)+' - '+ str(value_resource))
 
 print ("\nTotal Reservations by Resource \n")
 print ("   Reserved Mem is :{}".format(total_reserved_mem))

@@ -42,7 +42,7 @@ class mesos(object):
             return response.text
 	
     def get_quota_info(self):
-	response = requests.get(self.uri + '/quota', headers=self.headers, verify=False)
+        response = requests.get(self.uri + '/quota', headers=self.headers, verify=False)
         if response.status_code != 200:
             print ("Failed to get Quotas")
             return None

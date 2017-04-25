@@ -26,7 +26,7 @@ dcos_token = marathon.dcos_auth_login(dcos_master,userid,password)
 if dcos_token != '':
     # Change - Remove Token from printing
     # print('{}{}'.format("DCOS TOKEN = ", dcos_token))
-    print "DCOS Token Received"	
+    print("DCOS Token Received")
 else:
     exit(1)
 print('-----------------------------')

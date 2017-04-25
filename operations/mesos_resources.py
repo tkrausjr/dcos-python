@@ -5,8 +5,13 @@ import json
 import marathon
 import mesos
 import requests
+
+import whydoyouwantto
+
 from requests.packages.urllib3.exceptions import InsecureRequestWarning 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+
 
 
 '''
@@ -115,7 +120,7 @@ print('    {} = {} '.format('DCOS Mesos Connected Agents', int(mesos_stats_json.
 
 print ("\n=======================================================")
 
-print "\nQUOTAS Information by Role is as follows:\n"
+print("\nQUOTAS Information by Role is as follows:\n")
 #f
 mesos_quota_text = new_mesos.get_quota_info()
 mesos_quota_json =  json.loads(mesos_quota_text)
@@ -243,9 +248,9 @@ for key_resource, value_resource in dict_for_totals_perRole.iteritems():
         print '   ' + str(key_resource)+' - '+ str(value_resource)
 
 print ("\nTotal Reservations by Resource \n")
-print "   Reserved Mem is :{}".format(total_reserved_mem)
-print "   Reserved CPU is :{}".format(total_reserved_cpu)
-print "   Reserved Disk is :{}".format(total_reserved_disk)
+print ("   Reserved Mem is :{}".format(total_reserved_mem))
+print ("   Reserved CPU is :{}".format(total_reserved_cpu))
+print ("   Reserved Disk is :{}".format(total_reserved_disk))
 
 print ("\n=======================================================")
 

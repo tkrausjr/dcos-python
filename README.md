@@ -3,13 +3,13 @@ This script makes API calls to Mesos to obtain the Mesos Reservations, Registere
 for an entire cluster and then organizes this data by Cluster, Agents, and finally by Mesos Roles.
 
 ## Requirements
-The script requires python3, requests and json Standard Pythong modules and a mesos Python module which is included \
-in the REPO.
+The script has only been tested with python2 as of now, requests and json Standard Pythong modules and a mesos Python module which is included \
+in the REPO. It should work fine with Python3 with some cosmetic fixes.
 
 ## Usage
 1) Update the "dcos_master", "userid", and "password" variables in the script for your DCOS cluster.
-2) /usr/bin/python3 mesos_resources.py
-
+2) /usr/bin/python mesos_resources.py
+3) Interpret Output - See below
 
 ## Interpretation
 

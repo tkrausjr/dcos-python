@@ -6,10 +6,10 @@ import socket
 
 zk_hosts = '54.193.113.160:2181,54.215.214.63:2181,52.53.184.163:2181'
 zk_port = 2181
-zk_root_path = "/w-host"
-zk_node_name = "b-node"
-num_paths = 2
-num_nodes_per_path = 2
+zk_root_path = "/z-host"
+zk_node_name = "node"
+num_paths = 10
+num_nodes_per_path = 10
 node_content = ' TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING \
 TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING \
 TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING \
@@ -17,8 +17,6 @@ TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node
 TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING \
 TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING \
 TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING '
-
-print(zk_hosts)
 
 def zk_write_test(zk_root_path,zk_node_name,num_paths,num_nodes_per_path,node_content):
     paths_created=[]
@@ -48,6 +46,8 @@ def zk_checks(zk_host,zk_port,verb):
 
 if __name__ == "__main__":
 
+    print(zk_hosts)
+    
     ## RESET The STATISTICS - ONE TIME
     for zk_host in zk_hosts.split(','):
         print("Resetting stats on ZK Host # " + zk_host)

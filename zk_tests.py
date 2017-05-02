@@ -6,17 +6,15 @@ import socket
 
 zk_hosts = '54.193.113.160:2181,54.215.214.63:2181,52.53.184.163:2181'
 zk_port = 2181
-zk_root_path = "/z-host"
+zk_root_path = "/a-zk-test/host"
 zk_node_name = "node"
-num_paths = 10
-num_nodes_per_path = 10
-node_content = ' TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING \
-TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING \
-TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING \
-TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING \
-TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING \
-TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING \
-TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING TESTING TESTING '
+num_paths = 2
+num_nodes_per_path = 6
+node_content = ' TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING \
+TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
+TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
+TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
+TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING '
 
 def zk_write_test(zk_root_path,zk_node_name,num_paths,num_nodes_per_path,node_content):
     paths_created=[]
@@ -24,9 +22,10 @@ def zk_write_test(zk_root_path,zk_node_name,num_paths,num_nodes_per_path,node_co
     for i in range(0,num_paths):
         full_zk_path = "{}/{}-{}".format(zk_root_path,'path',str(i))
         zk.ensure_path(full_zk_path)
+        paths_created.append(full_zk_path)
         for j in range(0,num_nodes_per_path):
             zk.create("{}/{}-{}".format(full_zk_path,zk_node_name,j), str.encode(node_content))
-            paths_created.append("{}/{}-{}".format(full_zk_path,zk_node_name,j))
+
     end_time=datetime.datetime.now()
     delta_time=end_time - start_time
     print("Time elapsed = " + str(delta_time) +" seconds. \n")
@@ -46,20 +45,21 @@ def zk_checks(zk_host,zk_port,verb):
 
 if __name__ == "__main__":
 
-    print(zk_hosts)
-    
+    print("ZK Hosts are " + zk_hosts + "\n")
+
     ## RESET The STATISTICS - ONE TIME
     for zk_host in zk_hosts.split(','):
         print("Resetting stats on ZK Host # " + zk_host)
         zk_ok = zk_checks(zk_host, zk_port,'srst')
+        print("Statistics reset  \n")
 
     # Work on ZK WRITES
     count=0
     all_host_paths=[]
     print("Number of ZK Paths to write = "+ str(num_paths))
-    print("Number of ZK Nodes in each path = "+ str(num_nodes_per_path))
+    print("Number of ZK Nodes in each path = "+ str(num_nodes_per_path)+"\n")
     for zk_host in zk_hosts.split(','):
-        print("Working on ZK Host # "+ str(count) +" , " + zk_host)
+        print("Working on ZK Host #"+ str(count) +" , " + zk_host)
         zk = KazooClient(hosts=zk_host)
         zk.start()
         created_paths = zk_write_test('{}-{}'.format(zk_root_path,count),zk_node_name,num_paths,num_nodes_per_path,node_content)
@@ -67,28 +67,22 @@ if __name__ == "__main__":
         count=count + 1
         zk.stop()
 
-
     # Cleaning up test ZK Nodes
-    '''
-    print(all_host_paths)
-    zk = KazooClient(hosts='54.193.113.160:2181')
-    zk.start()
-    zk.delete('/l-host-0/path-0/b-node-0',recursive=True)
-    zk.stop()
-    '''
-    for path in all_host_paths:
-        zk_host= zk_hosts.split(',')[0]
-        print("Using host = " + zk_host)
-        print("Removing Path = " + path)
-        zk = KazooClient(hosts=zk_host)
-        zk.start()
-        zk.delete(path,recursive=True)
-        zk.stop()
 
-    host_count=0
+    #new_count=count-1
+    zk = KazooClient(hosts=zk_hosts)
+    zk.start()
+    for i in range(0,count):
+        root_path = "{}-{}".format(zk_root_path, str(i))
+        print("Recursively Removing Path = " + root_path)
+        zk.delete(root_path,recursive=True)
+    zk.stop()
+    print("\n")
+
     ## Work on ZK Admin & stats for Zookeeper
+    host_count=0
     for zk_host in zk_hosts.split(','):
-        print("Working on ZK Host # "+ str(host_count) +" , " + zk_host)
+        print("Getting ZK Stats from ZK Host # "+ str(host_count) +" , " + zk_host)
         zk_ok = zk_checks(zk_host, zk_port,'ruok')
         print("ZK host "+ zk_host +" response = " + zk_ok.strip('b'))
 

@@ -3,10 +3,11 @@ __author__ = 'tkraus-m'
 from kazoo.client import KazooClient
 import datetime
 import socket
+import json
 
-zk_hosts = '54.193.113.160:2181,54.215.214.63:2181,52.53.184.163:2181'
+zk_hosts = '52.53.192.187:2181,13.56.16.80:2181,54.193.81.80:2181'
 zk_port = 2181
-zk_root_path = "/a-zk-test-116/host"
+zk_root_path = "/a-zk-test-8/host"
 zk_node_name = "node"
 num_paths = 2
 num_nodes_per_path = 5
@@ -85,9 +86,29 @@ if __name__ == "__main__":
     zk.start()
     zk.add_auth('digest','super:secret')
     data, stat = zk.get('/bouncer/datastore/data.json')
-    print("{} {}{}{}".format("ZK Version: is ",stat.version, ".\nBouncer ZK Data is \n",  data.decode("utf-8")))
+    # print("{} {}{}{}".format("ZK Version: is ",stat.version, ".\nBouncer ZK Data is \n",  data.decode("utf-8")))
     print("{} {} {}".format("Size of bouncer config is ~ ", len(data),"bytes.\n"))
     zk.stop()
+
+    bouncer_json = json.loads(data.decode("utf-8"))
+
+    user_count=0
+    # Iterate through the bouncer_json dict
+    for user in bouncer_json['users']:
+        print ('User = ' + user)
+        user_count=user_count + 1
+
+    group_count=0
+    # Iterate through the bouncer_json dict
+    for group in bouncer_json['groups']:
+        print ('Group = ' + group)
+        group_count=group_count + 1
+
+    acl_count=0
+    # Iterate through the bouncer_json dict
+    for acl in bouncer_json['acls']:
+        print ('ACLs = ' + acl)
+        acl_count=acl_count + 1
 
     # Cleaning up test ZK Nodes
     zk = KazooClient(hosts=zk_hosts)
@@ -111,10 +132,15 @@ if __name__ == "__main__":
         print(zk_srvr)
         host_count=host_count+1
 
-        '''
-        # Future Work if needed
-        zk_checks(zk_hosts,zk_port,'mntr')
-        zk_checks(zk_hosts,zk_port,'cons')
-        zk_checks(zk_hosts,zk_port,'stat')
-        zk_checks(zk_hosts,zk_port,'envi')
-        '''
+
+    print("Total Users in Bouncer  = " + str(user_count))
+    print("Total Groups in Bouncer = " + str(group_count))
+    print("Total ACL's in Bouncer  = " + str(acl_count))
+
+    '''
+    # Future Work if needed
+    zk_checks(zk_hosts,zk_port,'mntr')
+    zk_checks(zk_hosts,zk_port,'cons')
+    zk_checks(zk_hosts,zk_port,'stat')
+    zk_checks(zk_hosts,zk_port,'envi')
+    '''

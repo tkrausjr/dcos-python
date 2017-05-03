@@ -6,11 +6,15 @@ import socket
 
 zk_hosts = '54.193.113.160:2181,54.215.214.63:2181,52.53.184.163:2181'
 zk_port = 2181
-zk_root_path = "/a-zk-test/host"
+zk_root_path = "/a-zk-test-116/host"
 zk_node_name = "node"
 num_paths = 2
-num_nodes_per_path = 6
+num_nodes_per_path = 5
 node_content = ' TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING \
+TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
+TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
+TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
+TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
 TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
 TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
 TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
@@ -22,10 +26,9 @@ def zk_write_test(zk_root_path,zk_node_name,num_paths,num_nodes_per_path,node_co
     for i in range(0,num_paths):
         full_zk_path = "{}/{}-{}".format(zk_root_path,'path',str(i))
         zk.ensure_path(full_zk_path)
-        paths_created.append(full_zk_path)
         for j in range(0,num_nodes_per_path):
             zk.create("{}/{}-{}".format(full_zk_path,zk_node_name,j), str.encode(node_content))
-
+            paths_created.append("{}/{}-{}".format(full_zk_path,zk_node_name,j))
     end_time=datetime.datetime.now()
     delta_time=end_time - start_time
     print("Time elapsed = " + str(delta_time) +" seconds. \n")
@@ -67,9 +70,26 @@ if __name__ == "__main__":
         count=count + 1
         zk.stop()
 
-    # Cleaning up test ZK Nodes
+    # READ ZK Data
+    print("Reading unprotected ZK Data back in.")
+    zk = KazooClient(hosts=zk_hosts)
+    zk.start()
+    for zk_path in all_host_paths:
+        data, stat = zk.get(zk_path)
+        print("{} {}{}{}".format("ZK Version: is ",stat.version, ".  ZK Data is ",  data.decode("utf-8")))
+    zk.stop()
 
-    #new_count=count-1
+    # Get Bouncer Data
+    print("Reading digest protected /bouncer/data/data.json data from zk")
+    zk = KazooClient(hosts=zk_hosts)
+    zk.start()
+    zk.add_auth('digest','super:secret')
+    data, stat = zk.get('/bouncer/datastore/data.json')
+    print("{} {}{}{}".format("ZK Version: is ",stat.version, ".\nBouncer ZK Data is \n",  data.decode("utf-8")))
+    print("{} {} {}".format("Size of bouncer config is ~ ", len(data),"bytes.\n"))
+    zk.stop()
+
+    # Cleaning up test ZK Nodes
     zk = KazooClient(hosts=zk_hosts)
     zk.start()
     for i in range(0,count):
@@ -92,6 +112,7 @@ if __name__ == "__main__":
         host_count=host_count+1
 
         '''
+        # Future Work if needed
         zk_checks(zk_hosts,zk_port,'mntr')
         zk_checks(zk_hosts,zk_port,'cons')
         zk_checks(zk_hosts,zk_port,'stat')

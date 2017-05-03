@@ -7,7 +7,7 @@ import json
 
 zk_hosts = '52.53.192.187:2181,13.56.16.80:2181,54.193.81.80:2181'
 zk_port = 2181
-zk_root_path = "/a-zk-test-8/host"
+zk_root_path = "/a-zk-test-16/host"
 zk_node_name = "node"
 num_paths = 2
 num_nodes_per_path = 5
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     zk.start()
     for zk_path in all_host_paths:
         data, stat = zk.get(zk_path)
-        print("{} {}{}{}".format("ZK Version: is ",stat.version, ".  ZK Data is ",  data.decode("utf-8")))
+        print("{} {}{}{}".format("ZK Node version: is ",stat.version, ".  ZK Data sample ",  data.decode("utf-8").split(' ')[:3]))
     zk.stop()
 
     # Get Bouncer Data
@@ -95,19 +95,19 @@ if __name__ == "__main__":
     user_count=0
     # Iterate through the bouncer_json dict
     for user in bouncer_json['users']:
-        print ('User = ' + user)
+        print ('Bouncer User = ' + user)
         user_count=user_count + 1
 
     group_count=0
     # Iterate through the bouncer_json dict
     for group in bouncer_json['groups']:
-        print ('Group = ' + group)
+        print ('Bouncer Group = ' + group)
         group_count=group_count + 1
 
     acl_count=0
     # Iterate through the bouncer_json dict
     for acl in bouncer_json['acls']:
-        print ('ACLs = ' + acl)
+        print ('Bouncer ACLs = ' + acl)
         acl_count=acl_count + 1
 
     # Cleaning up test ZK Nodes

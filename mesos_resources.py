@@ -1,33 +1,24 @@
 __author__ = 'tkraus-m'
 
-import sys
 import json
-<<<<<<< HEAD
-import modules.marathon as marathon
-import modules.mesos as mesos
-=======
-import marathon
-import mesos
->>>>>>> 78340bf7e58f90b022c8577a0ae360b45a920a8c
+
+from modules import marathon
+from modules import mesos
 import requests
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-<<<<<<< HEAD
-dcos_master = 'https://thomaskra-elasticl-w2zttbxjow1c-1785408093.us-east-1.elb.amazonaws.com'
+dcos_master = 'https://thomaskra-elasticl-19ie627ad4a20-1355906842.us-west-1.elb.amazonaws.com'
 userid = input('Enter the username for the DCOS cluster '+dcos_master +' : ')
 password = input('Enter the password for the DCOS cluster '+dcos_master +' : ')
 
-
-=======
+'''
 dcos_master = input('Enter hostname / IP for DCOS Master : ') # https://master-ip.domain.com
 userid = input('Enter the username for the DCOS cluster : ')
 password = input('Enter the password for the DCOS cluster : ')
+'''
 
-# userid = 'xxxxxxx'
-# password = 'yyyyyyy'
->>>>>>> 78340bf7e58f90b022c8577a0ae360b45a920a8c
 ## marathon_app_json = '/Users/tkraus/sandbox/marathon/12b-siege.json'
 
 
@@ -64,11 +55,10 @@ for role in mesos_roles_json['roles']:
     i+=1
 
 
-# <<<<<<< HEAD
-#=======
+
 # Change - Please put the Mesos Agents at the END and keep all the Reservations, quotas, and Cluster wide information at the front.
 # Change - Please remove the (u' from the printout) and just keep the KEY and Value in String format without the parenthesis.
-#>>>>>>> origin/master
+
 
 print ("\n=======================================================")
 
@@ -173,25 +163,21 @@ for agent in mesos_agents_json['slaves']:
             if reservation.get('name')=='disk':
                 role_disk_total=(role_cpus_total + reservation.get('scalar',{'value'})['value'])
 
-<<<<<<< HEAD
         print('  {} = {}'.format('Reserved CPUS',role_cpus_total))
         if ('cpus-'+ mesos_role) in dict_for_totals_perRole:
             dict_for_totals_perRole['cpus-'+ mesos_role] += role_cpus_total
         else:
             dict_for_totals_perRole['cpus-'+ mesos_role] = role_cpus_total
-=======
         #print('{} {} {} {} {}:'.format('Role',mesos_role,'on agent', agent['hostname'],'is using'))
-	print('  {} = {}'.format('Reserved CPUS',role_cpus_total))
-	if ('cpus-'+ mesos_role) in dict_for_totals_perRole:
-	    dict_for_totals_perRole['cpus-'+ mesos_role] += role_cpus_total
-	else: 
-	    dict_for_totals_perRole['cpus-'+ mesos_role] = role_cpus_total
-
->>>>>>> 78340bf7e58f90b022c8577a0ae360b45a920a8c
+        print('  {} = {}'.format('Reserved CPUS',role_cpus_total))
+        if ('cpus-'+ mesos_role) in dict_for_totals_perRole:
+            dict_for_totals_perRole['cpus-'+ mesos_role] += role_cpus_total
+        else:
+            dict_for_totals_perRole['cpus-'+ mesos_role] = role_cpus_total
 
         print('  {} = {}'.format('Reserved DISK',role_disk_total))
         if ('disk-'+ mesos_role) in dict_for_totals_perRole:
-                dict_for_totals_perRole['disk-'+mesos_role] += role_disk_total
+            dict_for_totals_perRole['disk-'+mesos_role] += role_disk_total
         else:
             dict_for_totals_perRole['disk-'+mesos_role] = role_disk_total
 

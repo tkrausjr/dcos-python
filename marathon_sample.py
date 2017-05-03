@@ -5,8 +5,8 @@ __author__ = 'tkraus-m'
 import sys
 import requests
 import json
-import marathon
-import mesos
+from modules import marathon
+from modules import mesos
 
 '''
 dcos_master = input("Enter the DNS hostname or IP of your Marathon Instance : ")

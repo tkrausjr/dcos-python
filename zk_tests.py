@@ -5,12 +5,12 @@ import datetime
 import socket
 import json
 
-zk_hosts = '52.53.192.187:2181,13.56.16.80:2181,54.193.81.80:2181'
+zk_hosts = '34.209.193.126:2181,52.25.154.122:2181,34.210.105.168:2181,52.42.117.249:2181,52.40.252.87:2181'
 zk_port = 2181
-zk_root_path = "/a-zk-test-16/host"
+zk_root_path = "/a-zk-test/host"
 zk_node_name = "node"
-num_paths = 2
-num_nodes_per_path = 5
+num_paths = 10
+num_nodes_per_path = 25
 node_content = ' TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING \
 TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
 TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
@@ -51,19 +51,22 @@ if __name__ == "__main__":
 
     print("ZK Hosts are " + zk_hosts + "\n")
 
+    '''
     ## RESET The STATISTICS - ONE TIME
     for zk_host in zk_hosts.split(','):
         print("Resetting stats on ZK Host # " + zk_host)
         zk_ok = zk_checks(zk_host, zk_port,'srst')
         print("Statistics reset  \n")
+    '''
 
     # Work on ZK WRITES
     count=0
     all_host_paths=[]
     print("Number of ZK Paths to write = "+ str(num_paths))
     print("Number of ZK Nodes in each path = "+ str(num_nodes_per_path)+"\n")
+    total_writes = (num_paths * num_nodes_per_path)
     for zk_host in zk_hosts.split(','):
-        print("Working on ZK Host #"+ str(count) +" , " + zk_host)
+        print("Creating " + str(total_writes) +" ZK Nodes on ZK Host #"+ str(count) +" , " + zk_host)
         zk = KazooClient(hosts=zk_host)
         zk.start()
         created_paths = zk_write_test('{}-{}'.format(zk_root_path,count),zk_node_name,num_paths,num_nodes_per_path,node_content)
@@ -92,8 +95,9 @@ if __name__ == "__main__":
 
     bouncer_json = json.loads(data.decode("utf-8"))
 
-    user_count=0
+
     # Iterate through the bouncer_json dict
+    user_count=0
     for user in bouncer_json['users']:
         print ('Bouncer User = ' + user)
         user_count=user_count + 1
@@ -136,7 +140,7 @@ if __name__ == "__main__":
     print("Total Users in Bouncer  = " + str(user_count))
     print("Total Groups in Bouncer = " + str(group_count))
     print("Total ACL's in Bouncer  = " + str(acl_count))
-
+    print("{} {} {}".format("Size of bouncer ZK config (/bouncer/datastore/data.json) is ~ ", len(data),"bytes.\n"))
     '''
     # Future Work if needed
     zk_checks(zk_hosts,zk_port,'mntr')

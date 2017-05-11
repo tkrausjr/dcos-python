@@ -5,12 +5,12 @@ import datetime
 import socket
 import json
 
-zk_hosts = '34.209.193.126:2181,52.25.154.122:2181,34.210.105.168:2181,52.42.117.249:2181,52.40.252.87:2181'
+zk_hosts = '54.202.226.124:2181,54.245.196.118:2181,54.213.137.229:2181'
 zk_port = 2181
-zk_root_path = "/a-zk-test/host"
+zk_root_path = "/a-zk-test-4/host"
 zk_node_name = "node"
-num_paths = 10
-num_nodes_per_path = 25
+num_paths = 1
+num_nodes_per_path = 2
 node_content = ' TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE BEing TESTED Check node contents TESTING \
 TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \
 TESTING TESTING TESTING DCOS NODE being TESTED DCOS NODE being TESTED Check node contents TESTING TESTING TESTING \

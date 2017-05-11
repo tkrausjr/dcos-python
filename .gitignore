@@ -1,0 +1,14 @@
+# Build and Release Folders
+bin/
+bin-debug/
+bin-release/
+.DS_Store
+__pycache__
+
+# Other files and folders
+.settings/
+
+# Executables
+
+
+

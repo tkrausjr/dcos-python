@@ -2,8 +2,7 @@ __author__ = 'tkraus-m'
 
 import json
 
-from modules import marathon
-from modules import mesos
+from modules import dcos
 import requests
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning 
@@ -19,14 +18,9 @@ userid = input('Enter the username for the DCOS cluster : ')
 password = input('Enter the password for the DCOS cluster : ')
 '''
 
-## marathon_app_json = '/Users/tkraus/sandbox/marathon/12b-siege.json'
-
-
 ## Login to DCOS to retrieve an API TOKEN
-dcos_token = marathon.dcos_auth_login(dcos_master,userid,password)
+dcos_token = dcos.dcos_auth_login(dcos_master,userid,password)
 if dcos_token != '':
-    # Change - Remove Token from printing
-    # print('{}{}'.format("DCOS TOKEN = ", dcos_token))
     print("DCOS Token Received")
 else:
     exit(1)
@@ -34,7 +28,7 @@ print('-----------------------------')
 
 
 ## MESOS SECTION
-new_mesos = mesos.mesos(dcos_master,dcos_token)
+new_mesos = dcos.mesos(dcos_master,dcos_token)
 
 mesos_stats_text = new_mesos.get_metrics()
 # Change - Remove RAW print below.

@@ -1,25 +1,19 @@
 __author__ = 'tkraus-m'
 
+from modules import dcos
 
-
-import sys
-import requests
-import json
-from modules import marathon
-
-
-'''
-dcos_master = input("Enter the DNS hostname or IP of your Marathon Instance : ")
-userid = input('Enter the username for the DCOS cluster : ')
-password = input('Enter the password for the DCOS cluster : ')
+dcos_master = 'https://54.200.228.222'
+userid = 'admindcos'
+password = 'dcos123'
 '''
 dcos_master = 'https://54.200.228.222'
 userid = input('Enter the username for the DCOS cluster '+dcos_master +' : ')
 password = input('Enter the password for the DCOS cluster '+dcos_master +' : ')
+'''
 marathon_app_json = '/Users/tkraus/sandbox/marathon/12b-siege.json'
 
 ## Login to DCOS to retrieve an API TOKEN
-dcos_token = marathon.dcos_auth_login(dcos_master,userid,password)
+dcos_token = dcos.dcos_auth_login(dcos_master,userid,password)
 if dcos_token != '':
     print('{}{}'.format("DCOS TOKEN = ", dcos_token))
 else:
@@ -27,7 +21,7 @@ else:
 print('-----------------------------')
 
 ## Initialize new Marathon Instance of Marathon Class
-new_marathon = marathon.marathon(dcos_master,dcos_token)
+new_marathon = dcos.marathon(dcos_master,dcos_token)
 
 ## List Marathon Apps Method
 marathon_apps = new_marathon.get_all_apps()

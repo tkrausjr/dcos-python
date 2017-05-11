@@ -9,7 +9,7 @@ import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-dcos_master = 'https://thomaskra-elasticl-19ie627ad4a20-1355906842.us-west-1.elb.amazonaws.com'
+dcos_master = 'https://54.200.228.222'
 userid = input('Enter the username for the DCOS cluster '+dcos_master +' : ')
 password = input('Enter the password for the DCOS cluster '+dcos_master +' : ')
 

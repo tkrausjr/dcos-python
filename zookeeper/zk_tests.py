@@ -5,7 +5,7 @@ import datetime
 import socket
 import json
 
-zk_hosts = '54.202.226.124:2181,54.245.196.118:2181,54.213.137.229:2181'
+zk_hosts = '54.245.195.3, 54.200.228.222, 54.191.236.84'
 zk_port = 2181
 zk_root_path = "/a-zk-test-4/host"
 zk_node_name = "node"
@@ -132,7 +132,7 @@ if __name__ == "__main__":
         print("ZK host "+ zk_host +" response = " + zk_ok.strip('b'))
 
         # Work on srvr Requests
-        zk_srvr = zk_checks(zk_hosts,zk_port,'srvr')
+        zk_srvr = zk_checks(zk_host,zk_port,'srvr')
         print(zk_srvr)
         host_count=host_count+1
 

@@ -6,16 +6,16 @@ import sys
 import requests
 import json
 from modules import marathon
-from modules import mesos
+
 
 '''
 dcos_master = input("Enter the DNS hostname or IP of your Marathon Instance : ")
 userid = input('Enter the username for the DCOS cluster : ')
 password = input('Enter the password for the DCOS cluster : ')
 '''
-dcos_master = 'https://thomaskra-elasticl-vdprnh8o7efq-90864495.us-west-2.elb.amazonaws.com'
-userid = 'bootstrapuser'
-password = 'deleteme'
+dcos_master = 'https://54.200.228.222'
+userid = input('Enter the username for the DCOS cluster '+dcos_master +' : ')
+password = input('Enter the password for the DCOS cluster '+dcos_master +' : ')
 marathon_app_json = '/Users/tkraus/sandbox/marathon/12b-siege.json'
 
 ## Login to DCOS to retrieve an API TOKEN

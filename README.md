@@ -1,4 +1,4 @@
-# DCOS Python 
+# dcos-python Repo
 This repo contains scripts for working with and getting infomration from your DCOS EE Cluster.
 
 # mesos Folder
@@ -11,7 +11,10 @@ The marathon folder contains a sample script that leverages the modules/marathon
 The mesos folder contains Python scripts for interacting with Apache Zookeeper through Python. To get more details look at the README in zookeeper folder.
 
 # modules Folder
-The modules folder contains Python classes for DCOS ACS, Marathon, and Apache Mesos that can be imported and called from other scripts
+The modules folder contains a "dcos" Python module classes for DCOS ACS, Marathon, and Mesos that can be imported and called from other scripts
+
+To use this module in your scripts 
+from modules import dcos
 
 ## Requirements
 These scripts have only been tested with python3.5 as of now, requests and json Standard Python modules and a mesos Python module which is included \

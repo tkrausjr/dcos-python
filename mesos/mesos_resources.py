@@ -1,14 +1,16 @@
+#!/usr/local/bin/python3
 __author__ = 'tkraus-m'
 
 import json
 
 from modules import dcos
+# from modules.dcos import *
 import requests
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-dcos_master = 'https://54.200.228.222'
+dcos_master = 'https://thomaskra-elasticl-1uiia8w37pf44-1546717418.us-west-2.elb.amazonaws.com'
 userid = input('Enter the username for the DCOS cluster '+dcos_master +' : ')
 password = input('Enter the password for the DCOS cluster '+dcos_master +' : ')
 
@@ -17,6 +19,11 @@ dcos_master = input('Enter hostname / IP for DCOS Master : ') # https://master-i
 userid = input('Enter the username for the DCOS cluster : ')
 password = input('Enter the password for the DCOS cluster : ')
 '''
+print("DEBUG")
+import os; print(os.getcwd())
+import sys; print(sys.path)
+
+
 
 ## Login to DCOS to retrieve an API TOKEN
 dcos_token = dcos.dcos_auth_login(dcos_master,userid,password)
